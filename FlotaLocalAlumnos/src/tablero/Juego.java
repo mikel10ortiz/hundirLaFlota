@@ -1,7 +1,10 @@
 package tablero;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -56,30 +59,26 @@ public class Juego {
 	 */
 	private void dibujaTablero() {
         // POR IMPLEMENTAR
-		frame = new JFrame("Hundir la flota");
-		Container contenedor = frame.getContentPane();
-		JMenuBar barraMenu = new JMenuBar();
-		contenedor.add(barraMenu);
-		JMenu menuOpciones = new JMenu("Opciones");
-		JMenuItem itemIniciar = new JMenuItem("Iniciar partida");
-		barraMenu.add(menuOpciones);
-		menuOpciones.add(itemIniciar);
-		JMenuItem itemLimpiar = new JMenuItem("Limpiar tablero");
-		menuOpciones.add(itemLimpiar);
-		JMenuItem itemSalir = new JMenuItem("Salir del juego");
-		menuOpciones.add(itemSalir);
+		frame = new JFrame("Hundir la flota");	
 		
 		for(int i = 0; i < NUMFILAS; i++){
 			for(int j = 0; j < NUMCOLUMNAS; j++){
 				JButton boton = new JButton();
 				boton.addActionListener(new ButtonListener());
-				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
+				boton.putClientProperty("fila", i);
+				boton.putClientProperty("columna", j);
+//				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
 				boton.setPreferredSize(new Dimension(25, 25));
 				buttons[i][j] = boton;
 			}
 		}
 		
-		JPanel panelTablero = new JPanel();
+		anyadeMenu();
+		anyadeGrid(NUMFILAS, NUMCOLUMNAS);
+		anyadePanelEstado("Inicio de partida");
+		
+		frame.pack();
+		frame.setVisible(true);
 		
 	} // end dibujaTablero
 	
@@ -88,6 +87,16 @@ public class Juego {
 	 */
 	private void anyadeMenu() {
         // POR IMPLEMENTAR
+		JMenuBar barraMenu = new JMenuBar();
+		frame.setJMenuBar(barraMenu);
+		JMenu menuOpciones = new JMenu("Opciones");
+		JMenuItem itemIniciar = new JMenuItem("Iniciar partida");
+		barraMenu.add(menuOpciones);
+		menuOpciones.add(itemIniciar);
+		JMenuItem itemLimpiar = new JMenuItem("Limpiar tablero");
+		menuOpciones.add(itemLimpiar);
+		JMenuItem itemSalir = new JMenuItem("Salir del juego");
+		menuOpciones.add(itemSalir);
 	} // end anyadeMenu
 
 	/**
@@ -97,7 +106,35 @@ public class Juego {
 	 * @param nc	numero de columnas
 	 */
 	private void anyadeGrid(int nf, int nc) {
-        // POR IMPLEMENTAR		
+        // POR IMPLEMENTAR	
+		JPanel panelTablero = new JPanel();
+		panelTablero.setLayout(new GridLayout(NUMFILAS + 1, NUMCOLUMNAS + 2));
+		frame.getContentPane().add(panelTablero);
+		//DIBUJA
+		JLabel lbIndice = new JLabel();
+		String[] letras = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"};
+		
+		for(int i = 0; i < NUMFILAS + 1; i++){
+			for(int j = 0; j < NUMCOLUMNAS + 2; j++){
+				if(i == 0 && (j == 0 || j == NUMCOLUMNAS + 1)){
+					lbIndice = new JLabel(" ");
+					panelTablero.add(lbIndice);
+				}
+				if(i == 0 && j > 0 && j < NUMCOLUMNAS + 1){
+					lbIndice = new JLabel(Integer.toString(j));
+					lbIndice.setAlignmentX(Component.CENTER_ALIGNMENT);
+					panelTablero.add(lbIndice);
+				}
+				if(i > 0 && (j == 0 || j == NUMCOLUMNAS + 1)){
+					lbIndice = new JLabel(letras[i - 1]);
+					panelTablero.add(lbIndice);
+				}
+				
+				if(i > 0 && j > 0 && j < NUMCOLUMNAS + 1){
+					panelTablero.add(buttons[i - 1][j - 1]);
+				}
+			}
+		}
 	} // end anyadeGrid
 	
 
@@ -107,6 +144,10 @@ public class Juego {
 	 */
 	private void anyadePanelEstado(String cadena) {	
         // POR IMPLEMENTAR
+		JPanel panelEstado = new JPanel();
+		frame.getContentPane().add(panelEstado, BorderLayout.SOUTH);
+		JLabel lbEstado = new JLabel(cadena);
+		panelEstado.add(lbEstado);
 	} // end anyadePanel Estado
 	
 	/**
