@@ -20,7 +20,7 @@ public class Juego {
 	
 	/**
 	 * Implementa el juego 'Hundir la flota' mediante una interfaz grafica (GUI)
-	 * HAGO UNA PRUEBA GUITHUBafdasdf
+	 * HAGO UNA PRUEBA GUITHUBafdasdfaasd
 	 */
 	
 	/** Estados posibles de las casillas del tablero */
