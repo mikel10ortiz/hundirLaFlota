@@ -15,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class Juego {
 	
@@ -51,8 +52,16 @@ public class Juego {
 	 */
 	private void ejecuta() {
         // POR IMPLEMENTAR
-		buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
-		dibujaTablero();
+		SwingUtilities.invokeLater(new Runnable() {
+			
+
+			@Override
+			public void run() {
+				partida = new Partida();
+				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
+				dibujaTablero();				
+			}
+		});
 	} // end ejecuta
 	
 	/**
@@ -164,6 +173,9 @@ public class Juego {
 	 */
 	private void muestraSolucion() {
         // POR IMPLEMENTAR
+		String[] solucion = partida.getSolucion();
+//		RECORRER EL VECTOR Y MOSTRAR LA SOLUCION
+		estado.setText("PARTIDA FINALIZADA");
 	} // end muestraSolucion
 	
 	/**

@@ -115,7 +115,10 @@ public class Partida {
 	 */	
 	public String[] getSolucion() {
 		
-		String[] vector = new String[barcos.length];
+		String[] vector = new String[barcos.size()];
+		for(int i = 0; i < barcos.size(); i++){
+			vector[i] = barcos.get(i).toString();
+		}
 		
 		return null;
 	}
