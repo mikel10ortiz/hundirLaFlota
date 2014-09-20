@@ -33,9 +33,18 @@ public class Partida {
 	 * @param   nc  numero de barcos
 	 */
 	public Partida(int nf, int nc, int nb) {
-		this.numFilas = nf;
-		this.numColumnas = nc;
-		this.numBarcos = nb;
+		numFilas = nf;
+		numColumnas = nc;
+		mar = new int[numFilas][numColumnas];
+		numBarcos = nb;
+		barcos = new Vector<Barco>();
+		for(int i = 0; i < nf; i++){
+			for(int j = 0; j < nc; j++){
+				mar[i][j] = -1;
+			}
+		}
+		
+		ponBarcos();
 	}
 	
 	/**

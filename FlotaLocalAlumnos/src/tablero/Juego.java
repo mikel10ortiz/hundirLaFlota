@@ -1,6 +1,7 @@
 package tablero;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -14,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -57,7 +59,7 @@ public class Juego {
 
 			@Override
 			public void run() {
-				partida = new Partida();
+				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
 				dibujaTablero();				
 			}
@@ -79,6 +81,7 @@ public class Juego {
 				boton.putClientProperty("columna", j);
 //				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
 				boton.setPreferredSize(new Dimension(25, 25));
+				boton.addActionListener(new ButtonListener());
 				buttons[i][j] = boton;
 			}
 		}
@@ -101,11 +104,15 @@ public class Juego {
 		frame.setJMenuBar(barraMenu);
 		JMenu menuOpciones = new JMenu("Opciones");
 		JMenuItem itemIniciar = new JMenuItem("Iniciar partida");
+		itemIniciar.setActionCommand("nueva");
+		itemIniciar.addActionListener(new MenuListener());
 		barraMenu.add(menuOpciones);
 		menuOpciones.add(itemIniciar);
 		JMenuItem itemLimpiar = new JMenuItem("Limpiar tablero");
 		menuOpciones.add(itemLimpiar);
 		JMenuItem itemSalir = new JMenuItem("Salir del juego");
+		itemSalir.setActionCommand("salir");
+		itemSalir.addActionListener(new MenuListener());
 		menuOpciones.add(itemSalir);
 	} // end anyadeMenu
 
@@ -131,7 +138,7 @@ public class Juego {
 					panelTablero.add(lbIndice);
 				}
 				if(i == 0 && j > 0 && j < NUMCOLUMNAS + 1){
-					lbIndice = new JLabel(Integer.toString(j));
+					lbIndice = new JLabel(Integer.toString(j - 1));
 					lbIndice.setAlignmentX(Component.CENTER_ALIGNMENT);
 					panelTablero.add(lbIndice);
 				}
@@ -199,6 +206,12 @@ public class Juego {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 	        // POR IMPLEMENTAR	
+			if(e.getActionCommand().equals("nueva")){
+				ejecuta();
+			}
+			if(e.getActionCommand().equals("salir")){
+				System.exit(0);
+			}
 		} // end actionPerformed
 		
 	} // end class MenuListener
@@ -217,6 +230,25 @@ public class Juego {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 	        // POR IMPLEMENTAR
+			JButton botonPulsado = (JButton)e.getSource();
+			int fila = (int) botonPulsado.getClientProperty("fila");
+			int columna = (int)botonPulsado.getClientProperty("columna");
+			
+//			JOptionPane.showMessageDialog(null, "fila " + fila + " " + "columna " + columna);
+			
+			int resultadoCasilla = partida.pruebaCasilla(fila, columna);
+			
+			switch(resultadoCasilla){
+			case AGUA:
+				botonPulsado.setBackground(new Color(0,0,255));
+				break;
+			case TOCADO:
+				botonPulsado.setBackground(new Color(230, 95, 0));
+				break;
+			case HUNDIDO:
+				
+				break;
+			}
 		} // end actionPerformed
 
 		
