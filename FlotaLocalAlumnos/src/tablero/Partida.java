@@ -54,7 +54,7 @@ public class Partida {
 	 * @return		resultado de marcar la casilla: AGUA, ya TOCADO, ya HUNDIDO, identidad del barco recien hundido
 	 */	
     public int pruebaCasilla(int f, int c) {
-    	
+//    	ESTE METODO HAY QUE MODIFICARLO, NO ESTÁ CLARO LO QUE HACE Y NO FUNCIONA COMO DEBE
     	int devuelvo = 0;
     	
     	if(mar[f][c] < 0){
@@ -72,16 +72,16 @@ public class Partida {
     		int columnaInicial_aux = barcos.get(barco).getColumnaInicial();
     		
     		if(tamanyo_aux - tocadas_aux == 1){
-    			devuelvo= barco;
+    			devuelvo = barco;
     			barcos.get(barco).setTocadas(tocadas_aux++);
     			
-    			if(orientacion_aux== 'H'){
-    				for(int i=0; i< tamanyo_aux; i++){
+    			if(orientacion_aux == 'H'){
+    				for(int i = 0; i < tamanyo_aux; i++){
     					mar[filaInicial_aux][columnaInicial_aux + i] = -3;
     				}
     			}
     			else{
-    				for(int i=0; i< tamanyo_aux; i++){
+    				for(int i = 0; i < tamanyo_aux; i++){
     					mar[filaInicial_aux + 1][columnaInicial_aux] = -3;
     				}
     			}

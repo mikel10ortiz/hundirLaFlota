@@ -246,7 +246,7 @@ public class Juego {
 				botonPulsado.setBackground(new Color(230, 95, 0));
 				break;
 			case HUNDIDO:
-				
+//				RECORRER TODA LA MATRIZ Y CAMBIAR LAS HUNDIDAS
 				break;
 			}
 		} // end actionPerformed
