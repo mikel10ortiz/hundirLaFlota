@@ -33,7 +33,9 @@ public class Partida {
 	 * @param   nc  numero de barcos
 	 */
 	public Partida(int nf, int nc, int nb) {
-        // POR IMPLEMENTAR		
+		this.numFilas = nf;
+		this.numColumnas = nc;
+		this.numBarcos = nb;
 	}
 	
 	/**
@@ -43,9 +45,51 @@ public class Partida {
 	 * @return		resultado de marcar la casilla: AGUA, ya TOCADO, ya HUNDIDO, identidad del barco recien hundido
 	 */	
     public int pruebaCasilla(int f, int c) {
-        // POR IMPLEMENTAR
-    	return 0;
-    }
+    	
+    	int devuelvo = 0;
+    	
+    	if(mar[f][c] < 0){
+    		devuelvo = mar[f][c];
+    		return devuelvo;
+    	}//Comprobamos que sea AGUA o ya la hemos dicho
+    	else if(mar[f][c] >= 0){
+    		
+    		int barco = mar[f][c];
+    		//Obtenemos todos los datos del barco
+    		int tamanyo_aux = barcos.get(barco).getTamanyo();
+    		int tocadas_aux = barcos.get(barco).getTocadas();
+    		char orientacion_aux = barcos.get(barco).getOrientacion();
+    		int filaInicial_aux = barcos.get(barco).getFilaInicial();
+    		int columnaInicial_aux = barcos.get(barco).getColumnaInicial();
+    		
+    		if(tamanyo_aux - tocadas_aux == 1){
+    			devuelvo= barco;
+    			barcos.get(barco).setTocadas(tocadas_aux++);
+    			
+    			if(orientacion_aux== 'H'){
+    				for(int i=0; i< tamanyo_aux; i++){
+    					mar[filaInicial_aux][columnaInicial_aux + i] = -3;
+    				}
+    			}
+    			else{
+    				for(int i=0; i< tamanyo_aux; i++){
+    					mar[filaInicial_aux + 1][columnaInicial_aux] = -3;
+    				}
+    			}
+    			
+    			
+    			return devuelvo;
+    		} //Comprobamos que lo hemos hundido
+    		else{
+    			mar[f][c] = -2;
+    			devuelvo = -2;
+    			barcos.get(barco).setTocadas(tocadas_aux++);
+    			return devuelvo;
+    		} //Comprobamos que lo hemos tocado
+    		
+    	} 
+    	return devuelvo;
+    }//Fin del pruebaCasilla
     
 
 	/**
@@ -55,8 +99,14 @@ public class Partida {
 	 * @return	        cadena con los datos del barco
 	 */	
 	public String getBarco(int idBarco) {
-        // POR IMPLEMENTAR
-		return null;
+//		if(){
+//			si la idBarco es mayor o menor excepcion			
+//		}
+//		else{
+			Barco barco_aux =  barcos.get(idBarco);
+			String devuelvo =  barco_aux.toString();
+			return devuelvo;
+//		}
 	}
 	
 	/**
@@ -64,7 +114,9 @@ public class Partida {
 	 * @return	vector de cadenas, una por barco con la informacion de getBarco
 	 */	
 	public String[] getSolucion() {
-        // POR IMPLEMENTAR
+		
+		String[] vector = new String[barcos.length];
+		
 		return null;
 	}
     
