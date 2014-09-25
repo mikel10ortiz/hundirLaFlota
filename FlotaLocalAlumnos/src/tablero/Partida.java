@@ -37,6 +37,7 @@ public class Partida {
 		numColumnas = nc;
 		mar = new int[numFilas][numColumnas];
 		numBarcos = nb;
+		quedan = numBarcos;
 		barcos = new Vector<Barco>();
 		for(int i = 0; i < nf; i++){
 			for(int j = 0; j < nc; j++){
@@ -47,6 +48,29 @@ public class Partida {
 		ponBarcos();
 	}
 	
+	
+	
+	public int getNumBarcos() {
+		return numBarcos;
+	}
+
+
+	public int getQuedan() {
+		return quedan;
+	}
+
+	public void setQuedan(int quedan) {
+		this.quedan = quedan;
+	}
+
+	public int getDisparos() {
+		return disparos;
+	}
+
+	public void setDisparos(int disparos) {
+		this.disparos = disparos;
+	}
+
 	/**
 	 * Dispara sobre una casilla y devuelve el resultado
 	 * @param	f	fila de la casilla

@@ -59,9 +59,11 @@ public class Juego {
 
 			@Override
 			public void run() {
-				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				frame = new JFrame("Hundir la flota");	
 				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
-				dibujaTablero();				
+				dibujaTablero();	
+				frame.pack();
+				frame.setVisible(true);
 			}
 		});
 	} // end ejecuta
@@ -71,16 +73,14 @@ public class Juego {
 	 */
 	private void dibujaTablero() {
         // POR IMPLEMENTAR
-		frame = new JFrame("Hundir la flota");	
-		
+		buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
 		for(int i = 0; i < NUMFILAS; i++){
 			for(int j = 0; j < NUMCOLUMNAS; j++){
 				JButton boton = new JButton();
-				boton.addActionListener(new ButtonListener());
 				boton.putClientProperty("fila", i);
 				boton.putClientProperty("columna", j);
 //				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
-				boton.setPreferredSize(new Dimension(25, 25));
+				boton.setPreferredSize(new Dimension(30, 30));
 				boton.addActionListener(new ButtonListener());
 				buttons[i][j] = boton;
 			}
@@ -89,9 +89,7 @@ public class Juego {
 		anyadeMenu();
 		anyadeGrid(NUMFILAS, NUMCOLUMNAS);
 		anyadePanelEstado("Inicio de partida");
-		
-		frame.pack();
-		frame.setVisible(true);
+		partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 		
 	} // end dibujaTablero
 	
@@ -103,12 +101,12 @@ public class Juego {
 		JMenuBar barraMenu = new JMenuBar();
 		frame.setJMenuBar(barraMenu);
 		JMenu menuOpciones = new JMenu("Opciones");
-		JMenuItem itemIniciar = new JMenuItem("Iniciar partida");
+		JMenuItem itemIniciar = new JMenuItem("Nueva partida");
 		itemIniciar.setActionCommand("nueva");
 		itemIniciar.addActionListener(new MenuListener());
 		barraMenu.add(menuOpciones);
 		menuOpciones.add(itemIniciar);
-		JMenuItem itemLimpiar = new JMenuItem("Limpiar tablero");
+		JMenuItem itemLimpiar = new JMenuItem("Mostrar solucion");
 		menuOpciones.add(itemLimpiar);
 		JMenuItem itemSalir = new JMenuItem("Salir del juego");
 		itemSalir.setActionCommand("salir");
@@ -163,8 +161,8 @@ public class Juego {
         // POR IMPLEMENTAR
 		JPanel panelEstado = new JPanel();
 		frame.getContentPane().add(panelEstado, BorderLayout.SOUTH);
-		JLabel lbEstado = new JLabel(cadena);
-		panelEstado.add(lbEstado);
+		estado = new JLabel(cadena);
+		panelEstado.add(estado);
 	} // end anyadePanel Estado
 	
 	/**
@@ -173,6 +171,7 @@ public class Juego {
 	 */
 	private void cambiaEstado(String cadenaEstado) {
         // POR IMPLEMENTAR
+		estado.setText(cadenaEstado);
 	} // end cambiaEstado
 	
 	/**
@@ -190,6 +189,7 @@ public class Juego {
 	 */
 	private void limpiaTablero() {
         // POR IMPLEMENTAR
+		dibujaTablero();
 	} // end limpiaTablero
 
 	
@@ -207,7 +207,8 @@ public class Juego {
 		public void actionPerformed(ActionEvent e) {
 	        // POR IMPLEMENTAR	
 			if(e.getActionCommand().equals("nueva")){
-				ejecuta();
+				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				limpiaTablero();
 			}
 			if(e.getActionCommand().equals("salir")){
 				System.exit(0);
@@ -229,7 +230,7 @@ public class Juego {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-	        // POR IMPLEMENTAR
+	        // POR IMPLEMENTAR			
 			JButton botonPulsado = (JButton)e.getSource();
 			int fila = (int) botonPulsado.getClientProperty("fila");
 			int columna = (int)botonPulsado.getClientProperty("columna");
@@ -246,8 +247,7 @@ public class Juego {
 			else if(resultadoCasilla == HUNDIDO){
 				botonPulsado.setBackground(new Color(255,0,0));
 			}
-			else if(resultadoCasilla > 0){
-				JOptionPane.showMessageDialog(null, "entra");
+			else if(resultadoCasilla >= 0){
 				int filaInicial;
 				int colInicial;
 				char orientacion;
@@ -261,11 +261,11 @@ public class Juego {
 				filaInicial = Integer.parseInt(cadenaCogida);
 				
 				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
-				cadenaResto = cadenaResto.substring(1, cadenaResto.indexOf('#') + 1);
+				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#') + 1);
 				colInicial = Integer.parseInt(cadenaCogida);
 					
 				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
-				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#'), cadenaResto.length());
+				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#') + 1);
 				orientacion = cadenaCogida.charAt(0);
 				
 				tam = Integer.parseInt(cadenaResto);
@@ -282,7 +282,13 @@ public class Juego {
 					}
 					break;
 				}
+				
+				partida.setQuedan(partida.getNumBarcos() - 1);
 			}
+			
+			partida.setDisparos(partida.getDisparos() + 1);
+			String strEstado = "Intentos:" + partida.getDisparos() + " " + "Barcos restantes:" + partida.getQuedan();
+			cambiaEstado(strEstado);
 		} // end actionPerformed
 
 		
