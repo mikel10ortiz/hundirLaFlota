@@ -237,17 +237,51 @@ public class Juego {
 //			JOptionPane.showMessageDialog(null, "fila " + fila + " " + "columna " + columna);
 			
 			int resultadoCasilla = partida.pruebaCasilla(fila, columna);
-			
-			switch(resultadoCasilla){
-			case AGUA:
+			if(resultadoCasilla == AGUA){
 				botonPulsado.setBackground(new Color(0,0,255));
-				break;
-			case TOCADO:
-				botonPulsado.setBackground(new Color(230, 95, 0));
-				break;
-			case HUNDIDO:
-//				RECORRER TODA LA MATRIZ Y CAMBIAR LAS HUNDIDAS
-				break;
+			}
+			else if(resultadoCasilla == TOCADO){
+				botonPulsado.setBackground(new Color(255,112,40));
+			}
+			else if(resultadoCasilla == HUNDIDO){
+				botonPulsado.setBackground(new Color(255,0,0));
+			}
+			else if(resultadoCasilla > 0){
+				JOptionPane.showMessageDialog(null, "entra");
+				int filaInicial;
+				int colInicial;
+				char orientacion;
+				int tam;
+				String infoBarco = partida.getBarco(resultadoCasilla);
+				String cadenaCogida;
+				String cadenaResto;
+				
+				cadenaCogida = infoBarco.substring(0,infoBarco.indexOf('#'));
+				cadenaResto = infoBarco.substring(infoBarco.indexOf('#') + 1);
+				filaInicial = Integer.parseInt(cadenaCogida);
+				
+				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
+				cadenaResto = cadenaResto.substring(1, cadenaResto.indexOf('#') + 1);
+				colInicial = Integer.parseInt(cadenaCogida);
+					
+				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
+				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#'), cadenaResto.length());
+				orientacion = cadenaCogida.charAt(0);
+				
+				tam = Integer.parseInt(cadenaResto);
+			
+				switch(orientacion){
+				case 'H':
+					for(int i = 0; i < tam; i++){
+						buttons[filaInicial][colInicial + i].setBackground(new Color(255, 0, 0));						
+					}
+					break;
+				case 'V':
+					for(int i = 0; i < tam; i++){
+						buttons[filaInicial + i][colInicial].setBackground(new Color(255, 0, 0));						
+					}
+					break;
+				}
 			}
 		} // end actionPerformed
 

@@ -54,46 +54,27 @@ public class Partida {
 	 * @return		resultado de marcar la casilla: AGUA, ya TOCADO, ya HUNDIDO, identidad del barco recien hundido
 	 */	
     public int pruebaCasilla(int f, int c) {
-//    	ESTE METODO HAY QUE MODIFICARLO, NO ESTÁ CLARO LO QUE HACE Y NO FUNCIONA COMO DEBE
     	int devuelvo = 0;
-    	
+
+//    	SI ES MENOR QUE 0 SE DEVUELVE LO QUE YA HAY, XK HAY AGUA O YA SE HA PROBADO
     	if(mar[f][c] < 0){
     		devuelvo = mar[f][c];
-    		return devuelvo;
-    	}//Comprobamos que sea AGUA o ya la hemos dicho
+    		
+    	}
+    	
+//    	SI ES MAYOR QUE 0 ES QUE SE HA TOCADO UN BARCO
     	else if(mar[f][c] >= 0){
-    		
-    		int barco = mar[f][c];
-    		//Obtenemos todos los datos del barco
-    		int tamanyo_aux = barcos.get(barco).getTamanyo();
-    		int tocadas_aux = barcos.get(barco).getTocadas();
-    		char orientacion_aux = barcos.get(barco).getOrientacion();
-    		int filaInicial_aux = barcos.get(barco).getFilaInicial();
-    		int columnaInicial_aux = barcos.get(barco).getColumnaInicial();
-    		
-    		if(tamanyo_aux - tocadas_aux == 1){
-    			devuelvo = barco;
-    			barcos.get(barco).setTocadas(tocadas_aux++);
-    			
-    			if(orientacion_aux == 'H'){
-    				for(int i = 0; i < tamanyo_aux; i++){
-    					mar[filaInicial_aux][columnaInicial_aux + i] = -3;
-    				}
-    			}
-    			else{
-    				for(int i = 0; i < tamanyo_aux; i++){
-    					mar[filaInicial_aux + 1][columnaInicial_aux] = -3;
-    				}
-    			}
-    			
-    			
-    			return devuelvo;
+    		int indiceBarco = mar[f][c];
+    		Barco barco = barcos.get(indiceBarco);
+//    		COMPROBAMOS SI TODAVIA NO SE HA HUNDIDO
+    		if((barco.getTamanyo() - barco.getTocadas()) == 1){
+    			devuelvo = indiceBarco;
+    			barco.setTocadas(barco.getTocadas() + 1);
     		} //Comprobamos que lo hemos hundido
     		else{
     			mar[f][c] = -2;
     			devuelvo = -2;
-    			barcos.get(barco).setTocadas(tocadas_aux++);
-    			return devuelvo;
+    			barco.setTocadas(barco.getTocadas() + 1);
     		} //Comprobamos que lo hemos tocado
     		
     	} 
@@ -108,14 +89,8 @@ public class Partida {
 	 * @return	        cadena con los datos del barco
 	 */	
 	public String getBarco(int idBarco) {
-//		if(){
-//			si la idBarco es mayor o menor excepcion			
-//		}
-//		else{
-			Barco barco_aux =  barcos.get(idBarco);
-			String devuelvo =  barco_aux.toString();
-			return devuelvo;
-//		}
+
+		return barcos.get(idBarco).toString();
 	}
 	
 	/**
