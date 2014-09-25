@@ -94,6 +94,18 @@ public class Partida {
     		if((barco.getTamanyo() - barco.getTocadas()) == 1){
     			devuelvo = indiceBarco;
     			barco.setTocadas(barco.getTocadas() + 1);
+    			
+//    			PONER TODAS LAS CASILLAS DEL BARCO A -3
+    			if(barco.getOrientacion() == 'H'){
+    				for(int i = 0; i < barco.getTamanyo(); i++){
+	    				mar[barco.getFilaInicial()][barco.getColumnaInicial() + i] = -3;
+	    			}
+    			} else {
+    				for(int i = 0; i < barco.getTamanyo(); i++){
+	    				mar[barco.getFilaInicial() + i][barco.getColumnaInicial()] = -3;
+	    			}
+    			}
+    			
     		} //Comprobamos que lo hemos hundido
     		else{
     			mar[f][c] = -2;

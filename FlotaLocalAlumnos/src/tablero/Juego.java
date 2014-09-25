@@ -60,10 +60,11 @@ public class Juego {
 			@Override
 			public void run() {
 				frame = new JFrame("Hundir la flota");	
-				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];
-				dibujaTablero();	
+				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];	
+				dibujaTablero();
 				frame.pack();
 				frame.setVisible(true);
+				
 			}
 		});
 	} // end ejecuta
@@ -82,6 +83,7 @@ public class Juego {
 //				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
 				boton.setPreferredSize(new Dimension(30, 30));
 				boton.addActionListener(new ButtonListener());
+				boton.setBackground(new Color(255,255,255));
 				buttons[i][j] = boton;
 			}
 		}
@@ -189,7 +191,15 @@ public class Juego {
 	 */
 	private void limpiaTablero() {
         // POR IMPLEMENTAR
-		dibujaTablero();
+		partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+		for(int i = 0; i < NUMFILAS; i++){
+			for(int j = 0; j < NUMCOLUMNAS; j++){
+				buttons[i][j].setBackground(new Color(255,255,255));
+				buttons[i][j].setEnabled(true);
+
+			}
+		}
+		estado.setText("Inicio de partida");
 	} // end limpiaTablero
 
 	
@@ -283,12 +293,23 @@ public class Juego {
 					break;
 				}
 				
-				partida.setQuedan(partida.getNumBarcos() - 1);
+				partida.setQuedan(partida.getQuedan() - 1);
 			}
 			
 			partida.setDisparos(partida.getDisparos() + 1);
 			String strEstado = "Intentos:" + partida.getDisparos() + " " + "Barcos restantes:" + partida.getQuedan();
 			cambiaEstado(strEstado);
+			if(partida.getQuedan() == 0){
+				for(int i = 0; i < NUMFILAS; i++){
+					for(int j = 0; j < NUMCOLUMNAS; j++){
+						buttons[i][j].setEnabled(false);
+
+					}
+				}
+				
+				JOptionPane.showMessageDialog(null, "Terminó la partida");
+				
+			}
 		} // end actionPerformed
 
 		
