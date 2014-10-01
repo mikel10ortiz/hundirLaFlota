@@ -82,36 +82,23 @@ public class Partida {
 
 //    	SI ES MENOR QUE 0 SE DEVUELVE LO QUE YA HAY, XK HAY AGUA O YA SE HA PROBADO
     	if(mar[f][c] < 0){
-    		devuelvo = mar[f][c];
-    		
+    		devuelvo = mar[f][c];	
     	}
     	
-//    	SI ES MAYOR QUE 0 ES QUE SE HA TOCADO UN BARCO
+//    	SI SE TOCA UN BARCO, SE TOCA
     	else if(mar[f][c] >= 0){
     		int indiceBarco = mar[f][c];
     		Barco barco = barcos.get(indiceBarco);
-//    		COMPROBAMOS SI TODAVIA NO SE HA HUNDIDO
+//    		SI FALTA UNA POR TOCAR PARA HUNDIR EL BARCO, SE HUNDE
     		if((barco.getTamanyo() - barco.getTocadas()) == 1){
     			devuelvo = indiceBarco;
-    			barco.setTocadas(barco.getTocadas() + 1);
-    			
-//    			PONER TODAS LAS CASILLAS DEL BARCO A -3
-    			if(barco.getOrientacion() == 'H'){
-    				for(int i = 0; i < barco.getTamanyo(); i++){
-	    				mar[barco.getFilaInicial()][barco.getColumnaInicial() + i] = -3;
-	    			}
-    			} else {
-    				for(int i = 0; i < barco.getTamanyo(); i++){
-	    				mar[barco.getFilaInicial() + i][barco.getColumnaInicial()] = -3;
-	    			}
-    			}
-    			
-    		} //Comprobamos que lo hemos hundido
+    			hundirBarco(barco);
+    		}
     		else{
     			mar[f][c] = -2;
     			devuelvo = -2;
-    			barco.setTocadas(barco.getTocadas() + 1);
-    		} //Comprobamos que lo hemos tocado
+    			barco.aumentaTocadas();
+    		}
     		
     	} 
     	return devuelvo;
@@ -140,7 +127,7 @@ public class Partida {
 			vector[i] = barcos.get(i).toString();
 		}
 		
-		return null;
+		return vector;
 	}
     
 
@@ -245,5 +232,33 @@ public class Partida {
         return resultado;
     }
     
+    /*
+     * METODOS PRIVADOS AUXILIARES CREADOS POR NOSOTROS
+     */
+    public void aumentarDisparos(){
+    	disparos++;
+    }
     
+    public void restarQuedan(){
+    	quedan--;
+    }
+    
+    
+    /*
+     * METODOS PRIVADOS AUXILIARES CREADOS POR NOSOTROS
+     */
+    private void hundirBarco(Barco barco){
+    	barco.aumentaTocadas();
+		
+//		HUNDIR BARCO
+		if(barco.getOrientacion() == 'H'){
+			for(int i = 0; i < barco.getTamanyo(); i++){
+				mar[barco.getFilaInicial()][barco.getColumnaInicial() + i] = -3;
+			}
+		} else {
+			for(int i = 0; i < barco.getTamanyo(); i++){
+				mar[barco.getFilaInicial() + i][barco.getColumnaInicial()] = -3;
+			}
+		}
+    }
 } // end class Partida

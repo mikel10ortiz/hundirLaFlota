@@ -17,6 +17,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 public class Juego {
@@ -28,6 +29,9 @@ public class Juego {
 	
 	/** Estados posibles de las casillas del tablero */
 	private static final int AGUA = -1, TOCADO = -2, HUNDIDO = -3;
+	private static final Color AZUL = new Color(0,0,255);
+	private static final Color ROJO = new Color(255,0,0);
+	private static final Color AMARILLO = new Color(255,255,0);
 	
 	/** Parametros por defecto de una partida */
 	private static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6;
@@ -63,6 +67,8 @@ public class Juego {
 				buttons = new JButton[NUMFILAS][NUMCOLUMNAS];	
 				dibujaTablero();
 				frame.pack();
+				frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 				
 			}
@@ -81,7 +87,7 @@ public class Juego {
 				boton.putClientProperty("fila", i);
 				boton.putClientProperty("columna", j);
 //				boton.setActionCommand(Integer.toString(i) + "," + Integer.toString(j));
-				boton.setPreferredSize(new Dimension(30, 30));
+				boton.setPreferredSize(new Dimension(40, 40));
 				boton.addActionListener(new ButtonListener());
 				boton.setBackground(new Color(255,255,255));
 				buttons[i][j] = boton;
@@ -108,8 +114,10 @@ public class Juego {
 		itemIniciar.addActionListener(new MenuListener());
 		barraMenu.add(menuOpciones);
 		menuOpciones.add(itemIniciar);
-		JMenuItem itemLimpiar = new JMenuItem("Mostrar solucion");
-		menuOpciones.add(itemLimpiar);
+		JMenuItem itemSolucion = new JMenuItem("Mostrar solucion");
+		itemSolucion.setActionCommand("solucion");
+		menuOpciones.add(itemSolucion);
+		itemSolucion.addActionListener(new MenuListener());
 		JMenuItem itemSalir = new JMenuItem("Salir del juego");
 		itemSalir.setActionCommand("salir");
 		itemSalir.addActionListener(new MenuListener());
@@ -139,14 +147,19 @@ public class Juego {
 				}
 				if(i == 0 && j > 0 && j < NUMCOLUMNAS + 1){
 					lbIndice = new JLabel(Integer.toString(j - 1));
-					lbIndice.setAlignmentX(Component.CENTER_ALIGNMENT);
+					lbIndice.setHorizontalAlignment(SwingConstants.CENTER);
+					lbIndice.setVerticalAlignment(SwingConstants.BOTTOM);
 					panelTablero.add(lbIndice);
 				}
-				if(i > 0 && (j == 0 || j == NUMCOLUMNAS + 1)){
+				if(i > 0 && j == 0){
+					lbIndice = new JLabel(letras[i - 1]);
+					lbIndice.setHorizontalAlignment(SwingConstants.RIGHT);
+					panelTablero.add(lbIndice);
+				}
+				if(i > 0 && j == NUMCOLUMNAS + 1){
 					lbIndice = new JLabel(letras[i - 1]);
 					panelTablero.add(lbIndice);
 				}
-				
 				if(i > 0 && j > 0 && j < NUMCOLUMNAS + 1){
 					panelTablero.add(buttons[i - 1][j - 1]);
 				}
@@ -183,7 +196,7 @@ public class Juego {
         // POR IMPLEMENTAR
 		String[] solucion = partida.getSolucion();
 //		RECORRER EL VECTOR Y MOSTRAR LA SOLUCION
-		estado.setText("PARTIDA FINALIZADA");
+		cambiaEstado("PARTIDA FINALIZADA");
 	} // end muestraSolucion
 	
 	/**
@@ -192,14 +205,8 @@ public class Juego {
 	private void limpiaTablero() {
         // POR IMPLEMENTAR
 		partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
-		for(int i = 0; i < NUMFILAS; i++){
-			for(int j = 0; j < NUMCOLUMNAS; j++){
-				buttons[i][j].setBackground(new Color(255,255,255));
-				buttons[i][j].setEnabled(true);
-
-			}
-		}
-		estado.setText("Inicio de partida");
+		pintarBotones();
+		cambiaEstado("Inicio de partida");
 	} // end limpiaTablero
 
 	
@@ -215,13 +222,48 @@ public class Juego {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-	        // POR IMPLEMENTAR	
+	        /*
+	         * RESPUESTA AL BOTON DEL MENÚ NUEVA PARTIDA, SE CREA UNA PARTIDA Y SE LIMPIA EL TABLERO 
+	         */
 			if(e.getActionCommand().equals("nueva")){
 				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 				limpiaTablero();
 			}
+			
+			/*
+	         * RESPUESTA AL BOTON DEL MENÚ SALIR, CIERRA EL PROGRAMA 
+	         */
 			if(e.getActionCommand().equals("salir")){
 				System.exit(0);
+			}
+			
+			/*
+	         * RESPUESTA AL BOTON DEL MENÚ SOLUCION 
+	         */
+			if(e.getActionCommand().equals("solucion")){
+				
+				deshabilitarBotones();
+
+				/*
+		         * PINTAMOS EL TABLERO PROBANDO TODAS LAS CASILLAS Y PINTANDO MAR EN AZUL Y BARCO EN ROJO
+		         */
+				for(int i = 0; i < NUMFILAS; i++){
+					for(int j = 0; j < NUMCOLUMNAS; j++){
+						int casilla = partida.pruebaCasilla(i, j);
+						if(casilla == AGUA){
+							buttons[i][j].setBackground(AZUL);
+							buttons[i][j].setBorder(null);
+						}
+						else if(casilla >= 0 || casilla == HUNDIDO || casilla == TOCADO){
+							buttons[i][j].setBackground(ROJO);
+							buttons[i][j].setBorder(null);
+						}
+					}
+				}
+				
+				cambiaEstado("PARTIDA FINALIZADA");
+				
+				JOptionPane.showMessageDialog(null, "HAS MOSTRADO LA SOLUCIÓN\nPARTIDA FINALIZADA");
 			}
 		} // end actionPerformed
 		
@@ -240,72 +282,71 @@ public class Juego {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-	        // POR IMPLEMENTAR			
+			/*
+	         * COGEMOS LOS DATOS DEL BOTÓN Y PROBAMOS CASILLA, DEPENDE EL RETORNO PINTAMOS DE UN COLOR U OTRO 
+	         */		
 			JButton botonPulsado = (JButton)e.getSource();
 			int fila = (int) botonPulsado.getClientProperty("fila");
 			int columna = (int)botonPulsado.getClientProperty("columna");
 			
-//			JOptionPane.showMessageDialog(null, "fila " + fila + " " + "columna " + columna);
 			
 			int resultadoCasilla = partida.pruebaCasilla(fila, columna);
 			if(resultadoCasilla == AGUA){
-				botonPulsado.setBackground(new Color(0,0,255));
+				botonPulsado.setBackground(AZUL);
+				botonPulsado.setBorder(null);
 			}
 			else if(resultadoCasilla == TOCADO){
-				botonPulsado.setBackground(new Color(255,112,40));
+				botonPulsado.setBackground(AMARILLO);
+				botonPulsado.setBorder(null);
 			}
 			else if(resultadoCasilla == HUNDIDO){
-				botonPulsado.setBackground(new Color(255,0,0));
+				botonPulsado.setBackground(ROJO);
+				botonPulsado.setBorder(null);
 			}
 			else if(resultadoCasilla >= 0){
+				/*
+		         * SI EL RESULTADO ES UN NUMERO DE BARCO OBTENEMOS TODA SU INFORMACION
+		         * PARA PINTAR TODO EL BARCO DE ROJO
+		         */
 				int filaInicial;
 				int colInicial;
 				char orientacion;
 				int tam;
 				String infoBarco = partida.getBarco(resultadoCasilla);
-				String cadenaCogida;
-				String cadenaResto;
+				String[] infoArray = infoBarco.split("#");
 				
-				cadenaCogida = infoBarco.substring(0,infoBarco.indexOf('#'));
-				cadenaResto = infoBarco.substring(infoBarco.indexOf('#') + 1);
-				filaInicial = Integer.parseInt(cadenaCogida);
-				
-				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
-				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#') + 1);
-				colInicial = Integer.parseInt(cadenaCogida);
-					
-				cadenaCogida = cadenaResto.substring(0,cadenaResto.indexOf('#'));
-				cadenaResto = cadenaResto.substring(cadenaResto.indexOf('#') + 1);
-				orientacion = cadenaCogida.charAt(0);
-				
-				tam = Integer.parseInt(cadenaResto);
-			
+				filaInicial = Integer.parseInt(infoArray[0]);
+				colInicial = Integer.parseInt(infoArray[1]);
+				orientacion = infoArray[2].charAt(0);
+				tam = Integer.parseInt(infoArray[3]);
+
 				switch(orientacion){
 				case 'H':
 					for(int i = 0; i < tam; i++){
-						buttons[filaInicial][colInicial + i].setBackground(new Color(255, 0, 0));						
+						buttons[filaInicial][colInicial + i].setBackground(ROJO);
+						buttons[filaInicial][colInicial + i].setBorder(null);
 					}
 					break;
 				case 'V':
 					for(int i = 0; i < tam; i++){
-						buttons[filaInicial + i][colInicial].setBackground(new Color(255, 0, 0));						
+						buttons[filaInicial + i][colInicial].setBackground(ROJO);
+						buttons[filaInicial + i][colInicial].setBorder(null);	
 					}
 					break;
 				}
 				
-				partida.setQuedan(partida.getQuedan() - 1);
+				partida.restarQuedan(); // RESTAMOS UNO A QUEDAN
 			}
 			
-			partida.setDisparos(partida.getDisparos() + 1);
+			partida.aumentarDisparos();
 			String strEstado = "Intentos:" + partida.getDisparos() + " " + "Barcos restantes:" + partida.getQuedan();
 			cambiaEstado(strEstado);
+			
+			/*
+	         * SI NO QUEDAN BARCOS, TERMINAMOS LA PARTIDA DESHABILITANDO TODOS LOS BOTONES 
+	         */
 			if(partida.getQuedan() == 0){
-				for(int i = 0; i < NUMFILAS; i++){
-					for(int j = 0; j < NUMCOLUMNAS; j++){
-						buttons[i][j].setEnabled(false);
-
-					}
-				}
+				deshabilitarBotones();
 				
 				JOptionPane.showMessageDialog(null, "Terminó la partida");
 				
@@ -315,6 +356,31 @@ public class Juego {
 		
 	} // end class ButtonListener
 	
-	
+	/*
+	 * 
+	 * 
+     * **********************  METODOS PRIVADOS PARA MEJORAR EL CODIGO **************************** 
+     * 
+     * 
+     * 
+     */
 
+	private void pintarBotones(){
+		for(int i = 0; i < NUMFILAS; i++){
+			for(int j = 0; j < NUMCOLUMNAS; j++){
+				buttons[i][j].setBackground(new Color(255,255,255));
+				buttons[i][j].setEnabled(true);
+
+			}
+		}
+	}
+	
+	private void deshabilitarBotones(){
+		for(int i = 0; i < NUMFILAS; i++){
+			for(int j = 0; j < NUMCOLUMNAS; j++){
+				buttons[i][j].setEnabled(false);
+
+			}
+		}
+	}
 } // end class Juego

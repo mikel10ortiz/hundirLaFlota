@@ -29,6 +29,7 @@ public class Barco {
 		this.columnaInicial = c;
 		this.orientacion = orientacion;
 		this.tamanyo = tamanyo;
+		tocadas = 0;
 	}
 	
 	
@@ -89,6 +90,9 @@ public class Barco {
 		this.tocadas = tocadas;
 	}
 	
+	public void aumentaTocadas(){
+		tocadas++;
+	}
 
 
 } // end class Barco
